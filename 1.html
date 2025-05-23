@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вотермарк на фото</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+  <h2>Наложение водяного знака</h2>
+  <input type="file" id="upload" accept="image/*"><br><br>
+  <input type="text" id="watermarkText" autocomplete="on" placeholder="Введите водяной знак" value="© Ваш текст"><br><br>
+  <button onclick="addWatermark()">Добавить водяной знак</button>
+  <button onclick="downloadImage()">Скачать изображение</button>
+  <br><br>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    let image = new Image();
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    document.getElementById('upload').addEventListener('change', function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        image.onload = () => {
+          canvas.width = image.width;
+          canvas.height = image.height;
+          ctx.drawImage(image, 0, 0);
+        };
+        image.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function addWatermark() {
+      if (!image.src) return;
+      const text = document.getElementById('watermarkText').value;
+      ctx.drawImage(image, 0, 0); // перерисовать оригинал
+      const fontSize = Math.floor(canvas.width / 30);
+      ctx.font = `${fontSize}px Arial`;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(text, canvas.width - 5, canvas.height - 5);
+    }
+
+    function downloadImage() {
+      const link = document.createElement('a');
+      link.download = 'image_with_watermark.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    }
+  </script>
+
+</body>
+</html>
