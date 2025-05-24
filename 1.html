@@ -11,14 +11,14 @@
 </script>
 </head>
 <body>
-
-  <h2>Наложение водяного знака</h2><br>
   <input type="file" id="upload" accept="image/*"><br><br>
   <input type="text" id="watermarkText" autocomplete="on" placeholder="Введите водяной знак" value="© Ваш текст"><br><br>
-  <button onclick="addWatermark()">Добавить водяной знак</button>
-  <button onclick="downloadImage()">Скачать изображение</button>
-  <br><br>
+  <button onclick="addWatermark()">предпросмотр</button>
+<p>
   <canvas id="canvas"></canvas>
+<p>
+ <button onclick="downloadImage()">Скачать изображение</button>
+<a href="downloadImage()"> скачать</a>
 
   <script>
     let image = new Image();
