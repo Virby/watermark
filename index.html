@@ -5,6 +5,16 @@
   <title>watermark</title>
   <link rel="shortcut icon" href="./32.png" type="image/x-icon">
   <link rel="stylesheet" href="./style.css">
+<script>
+  function openExternalLink(url) {
+    if (window.vkBridge) {
+      vkBridge.send('VKWebAppOpenLink', { url: url });
+    } else {
+      window.open(url, '_blank');
+    }
+  }
+</script>
+
 
   <!-- Подключаем vkBridge -->
   <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
