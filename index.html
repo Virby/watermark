@@ -8,10 +8,10 @@
 <meta property="og:url" content="https://virby.github.io/watermark/32.png">
   <title>watermark</title>
 
-<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-<script src="https://virby.github.io/watermark/index.js"></script>
   <link rel="shortcut icon" href="./32.png" type="image/x-icon">
   <link rel="stylesheet" href="./style.css">
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script src="https://virby.github.io/watermark/index.js"></script>
 <script>
   vkBridge.send("VKWebAppInit", {});
 </script>
@@ -40,15 +40,12 @@
 </script>
 </head>
 <body>
-  <div class="blocktitle">
+  <H2 class="blocktitle">
     Наложение водяного знака<br>
-  </div>
-  <div class="blocktitle">
+  </H2>
     <!-- Ссылки для локальных страниц -->
     <a href="#" onclick="loadLocalPage('1.html')">текст</a> |
     <a href="#" onclick="loadLocalPage('2.html')">логотип</a>
-  </div>
-
   <!-- iframe для локальных страниц -->
   <iframe src="" id="contentFrame" style="width: 100%; height: 600px; border: none;"></iframe>
 

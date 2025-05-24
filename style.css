@@ -1,19 +1,21 @@
 body 
 	{
-	font-family: sans-serif; text-align: center; text-color: #FFFFFF;  }
+	font-family: sans-serif; text-align: center; text-color: #FFFFFF; text-size: 50px; }
     	canvas { max-width: 100%; margin-top: 1rem; border: 0px solid #ccc; }
 	
 
 .blocktitle {
  background: url(./style/1.png);
- 
  line-height: 50px;
- font: 50px 'Tahoma';
- text-shadow: 3px 3px ##0000FF;
+ font: 20px 'Tahoma';
+ text-shadow: 1px 3px #000000;
  color: #FFFFFF;
- padding-left: 0px;
+ padding-left: 5px;
  text-transform: uppercase;
+border-radius: 50%
+radius: 50px
 }
+
 #copyright {
  float: right;
  width: 40%;
