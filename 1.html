@@ -18,7 +18,7 @@
   <canvas id="canvas"></canvas>
 <p>
  <button onclick="downloadImage()">Скачать изображение</button>
-<a href="downloadImage()"> скачать</a>
+<button onclick="openImage">открыть и загрузить</button>
 
   <script>
     let image = new Image();
@@ -51,14 +51,21 @@
       ctx.textBaseline = 'bottom';
       ctx.fillText(text, canvas.width - 5, canvas.height - 5);
     }
-
-    function downloadImage() {
+ 
+ function downloadImage() {
       const link = document.createElement('a');
       link.download = 'image_with_watermark.png';
       link.href = canvas.toDataURL();
       link.click();
-    }
-  </script>
-
+	}
+function openImage() {
+  const dataUrl = canvas.toDataURL('image/png');
+  if (window.vkBridge) {
+    vkBridge.send('VKWebAppOpenLink', { url: canvas.toDataURL });
+  } else {
+    window.open(dataUrl, '_blank');
+  }
+}
+</script>
 </body>
 </html>
