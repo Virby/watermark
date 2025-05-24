@@ -3,18 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>watermark</title>
-<link rel="shortcut icon" href="./32.png" type="image/x-icon">
-<link rel="icon" type="image/png" sizes="32x32" href="./32.png">
+  <link rel="shortcut icon" href="./32.png" type="image/x-icon">
   <link rel="stylesheet" href="./style.css">
+
+  <!-- Подключаем vkBridge -->
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <script>
+    // Функция для открытия внешней ссылки в браузере
+    function openExternalLink(url) {
+      vkBridge.send('VKWebAppOpenLink', { url: url });
+    }
+
+    // Функция для загрузки локальных страниц
+    function loadLocalPage(page) {
+      document.getElementById('contentFrame').src = page;
+    }
+  </script>
 </head>
 <body>
-<div class="blocktitle">Наложение водяного знака<br>
-<a href="1.html" target="contentFrame">текст</a> |
-        <a href="2.html" target="contentFrame">логотип</a>
-<iframe src="" name="contentFrame"></iframe>
-</div>
-<div id"copyright">© 2025 по всем вопросам просьба обращаться на электронную почту virby.ua@gmail.com</div>
-<br><br><br>
+
+  <div class="blocktitle">
+    Наложение водяного знака<br>
+  </div>
+
+  <div class="blocktitle">
+    <!-- Ссылки для локальных страниц -->
+    <a href="#" onclick="loadLocalPage('1.html')">текст</a> |
+    <a href="#" onclick="loadLocalPage('2.html')">логотип</a>
+  </div>
+
+  <!-- iframe для локальных страниц -->
+  <iframe src="" id="contentFrame" style="width: 100%; height: 600px; border: none;"></iframe>
+
+  <div id="copyright">
+    © 2025 по всем вопросам просьба обращаться на электронную почту virby.ua@gmail.com
+  </div>
 
 </body>
 </html>
