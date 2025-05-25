@@ -1,7 +1,7 @@
 body 
 	{
 	font-family: sans-serif; text-align: center; text-color: #FFFFFF; text-size: 25px; }
-    	canvas { max-width: 100%; margin-top: 1rem; border: 0px solid #ccc; }
+    	canvas { max-width: 100%; max-heigth: 100%; margin-top: 1rem; border: 0px solid #ccc; }
 	
 
 .blocktitle {
