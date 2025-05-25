@@ -1,11 +1,11 @@
 body 
 	{
-	font-family: sans-serif; text-align: center; text-color: #FFFFFF; text-size: 50px; }
+	font-family: sans-serif; text-align: center; text-color: #FFFFFF; text-size: 25px; }
     	canvas { max-width: 100%; margin-top: 1rem; border: 0px solid #ccc; }
 	
 
 .blocktitle {
- background: url(./style/1.png);
+ background-color: #30626b;
  line-height: 50px;
  font: 20px 'Tahoma';
  text-shadow: 1px 3px #000000;
