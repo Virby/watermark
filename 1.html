@@ -58,14 +58,6 @@
       link.href = canvas.toDataURL();
       link.click();
 	}
-async function openImage() {
-    const photoUrl = "image_with_watermark.png; // замени на реальную ссылку
-    if (window.vkBridge) {
-      await vkBridge.send('VKWebAppOpenLink', { url: photoUrl });
-    } else {
-      window.open(photoUrl, '_blank');
-    }
-  }
 </script>
 </body>
 </html>
