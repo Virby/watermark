@@ -4,25 +4,43 @@
   <meta charset="UTF-8">
   <title>Вотермарк с логотипом</title>
   <link rel="stylesheet" href="./style.css">
+<script src="/theme.js"></script>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <script src="https://virby.github.io/watermark/index.js"></script>
+
+<script>
+	//theme
+    window.addEventListener('message', (event) => {
+      const theme = event.data.theme;
+      if (theme === 'dark') {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+      } else if (theme === 'light') {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+      }
+    });
+  </script>
+
 <script>
   vkBridge.send("VKWebAppInit", {});
 </script>
 </head>
 <body>
-<label><b>Основное изображение:</b></label><br>
-  <input type="file" id="mainImageInput" accept="image/*"><br><br>
-
+<label>
+<table>
+<td><b>Основное изображение:</b></label><br>
+  <input type="file" id="mainImageInput" accept="image/*">
+<td>
   <label><b>Логотип (PNG с прозрачностью):</b></label><br>
-  <input type="file" id="logoInput" accept="image/*"><br><br>
-
+  <input type="file" id="logoInput" accept="image/*">
+<td>
   <label><b>Масштаб логотипа (в % от ширины):</b></label><br>
-  <input type="number" id="scaleInput" value="10" min="1" max="100"><br><br>
-
+  <input type="number" id="scaleInput" value="10" min="1" max="100">
+<td>
   <button onclick="addLogoWatermark()">предпросмотр</button>
   <button onclick="downloadImage()">Скачать изображение</button><br><br>
-
+</table>
   <canvas id="canvas"></canvas>
  <script>
     const canvas = document.getElementById('canvas');

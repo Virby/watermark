@@ -1,8 +1,27 @@
-body 
-	{
-	font-family: width: 100%; heigth:100%; sans-serif; text-align: center; text-color: #FFFFFF; text-size: 25px; }
-    	canvas { max-width: 100%; max-heigth: 100%; margin-top: 1rem; border: 0px solid #ccc; }
-	
+body {
+    transition: background-color 0.3s, color 0.3s;
+    font-family: sans-serif;
+  }
+
+  body.light {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  body.dark {
+    background-color: #121212;
+    color: #ffffff;
+  }
+
+  button {
+    margin: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+
+.showphoto {
+image.width: 300px;
+}
 
 .blocktitle {
  background-color: #30626b;

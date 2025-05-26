@@ -6,19 +6,44 @@
   <link rel="stylesheet" href="./style.css">
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <script src="https://virby.github.io/watermark/index.js"></script>
+<script src="./theme.js"></script>
 <script>
   vkBridge.send("VKWebAppInit", {});
 </script>
+
+<script>
+	//theme
+    window.addEventListener('message', (event) => {
+      const theme = event.data.theme;
+      if (theme === 'dark') {
+        document.body.classList.remove('light');
+        document.body.classList.add('dark');
+      } else if (theme === 'light') {
+        document.body.classList.remove('dark');
+        document.body.classList.add('light');
+      }
+    });
+  </script>
+
 </head>
 <body>
-  <input type="file" id="upload" accept="image/*"><br><br>
-  <input type="text" id="watermarkText" autocomplete="on" placeholder="Введите водяной знак" value="© Ваш текст"><br><br>
-  <button onclick="addWatermark()">предпросмотр</button>
+<table>
+	<td>
+  <input type="file" id="upload" accept="image/*">
+	<td>
+ <input type="text" id="watermarkText" autocomplete="on" placeholder="Введите водяной знак" value="© Ваш текст">
+	<td>
+<button onclick="addWatermark()">предпросмотр</button>
+	<td>
+<button onclick="downloadImage()">загрузить изображение</button>
+</table> 
+ <br>
+
+
 <p>
-  <canvas id="canvas"></canvas>
+  <canvas id="canvas" class="showphoto"></canvas>
 <p>
- <button onclick="downloadImage()">Скачать изображение</button>
-<button onclick="openImage">открыть и загрузить</button>
+ 
 
   <script>
     let image = new Image();
