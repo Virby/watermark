@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta property="og:title" content="watermark deskop">
+<meta property="og:type" content="add watermark text or logo on picture">
+<meta property="og:image" content="https://virby.github.io/watermark/">
+<meta property="og:url" content="https://virby.github.io/watermark/style/leble.png">
+<title>watermark</title>
+<link rel="shortcut icon" href="./style/leble.png" type="image/x-icon">
+<link rel="stylesheet" href="./style.css">
+<style>
+    body.light-theme {
+      background-color: white;
+      color: black;
+    }
+    body.dark-theme {
+      background-color: black;
+      color: white;
+    }
+    canvas { display: block; margin-left: 10px; border: 0px solid #ccc; scrolling: yes; }
+    #copyright { margin-top: 20px; text-align: center; }
+    button { margin: 5px; padding: 8px 15px; cursor: pointer; }
+    table { border-collapse: collapse; }
+    td { padding: 10px; vertical-align: top; }
+</style>
+</head>
+<body class="light-theme">
+<H2 class="blocktitle">
+    Watermark deskop<br>
+<button id="toggleTheme">сменить тему</button>
+</h2>
+<table>
+<td width="400" style="vertical-align: top; height: 100px;" vertical-align: middle;>
+<h3>Выберите тип водяного знака:</h3>
+<label><input type="radio" name="wmType" value="text" checked> Текст</label>
+<label><input type="radio" name="wmType" value="logo"> Логотип</label>
+
+<br><br>
+<input type="file" id="mainImageInput" accept="image/*">
+<br><br>
+
+<div id="textOptions">
+  <input type="text" id="watermarkText" value="© Ваш текст" placeholder="Введите текст водяного знака">
+</div>
+
+<div id="logoOptions" style="display:none;">
+  <input type="file" id="logoInput" accept="image/*">
+  <input type="number" id="scaleInput" value="10" min="1" max="100"> Масштаб логотипа (%)
+</div>
+
+<br>
+<button onclick="previewWatermark()">Предпросмотр</button>
+<button onclick="shareImage()">Поделиться в VK</button>
+<button onclick="saveToGallery()">Сохранить</button>
+<td>
+<canvas id="canvas"></canvas>
+</table>
+
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script>
+  // Инициализация VK Bridge
+  vkBridge.send("VKWebAppInit", {});
+  
+  // Переменные для изображений
+  let mainImage = new Image();
+  let logoImage = new Image();
+  let mainImageLoaded = false;
+  let logoImageLoaded = false;
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Обработчики событий
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('toggleTheme').addEventListener('click', toggleTheme);
+    
+    // Обработчик основной картинки
+    document.getElementById('mainImageInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        mainImage.onload = () => {
+          mainImageLoaded = true;
+          canvas.width = mainImage.width;
+          canvas.height = mainImage.height;
+          ctx.drawImage(mainImage, 0, 0);
+        };
+        mainImage.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Обработчик логотипа
+    document.getElementById('logoInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        logoImage.onload = () => { logoImageLoaded = true; };
+        logoImage.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Переключение между текстом и логотипом
+    document.querySelectorAll('input[name="wmType"]').forEach(el => {
+      el.addEventListener('change', () => {
+        if (el.value === 'text') {
+          document.getElementById('textOptions').style.display = '';
+          document.getElementById('logoOptions').style.display = 'none';
+        } else {
+          document.getElementById('textOptions').style.display = 'none';
+          document.getElementById('logoOptions').style.display = '';
+        }
+      });
+    });
+  });
+
+  // Функции для работы с темой
+  function toggleTheme() {
+    document.body.classList.toggle('dark-theme');
+    document.body.classList.toggle('light-theme');
+  }
+
+  // Предпросмотр водяного знака
+  function previewWatermark() {
+    if (!mainImageLoaded) {
+      alert('Сначала загрузите изображение.');
+      return;
+    }
+
+    const wmType = document.querySelector('input[name="wmType"]:checked').value;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(mainImage, 0, 0);
+
+    if (wmType === 'text') {
+      const text = document.getElementById('watermarkText').value;
+      const fontSize = Math.floor(canvas.width / 30);
+      ctx.font = `${fontSize}px Arial`;
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(text, canvas.width - 5, canvas.height - 5);
+    } else if (wmType === 'logo') {
+      if (!logoImageLoaded) {
+        alert('Загрузите логотип.');
+        return;
+      }
+      const scalePercent = parseFloat(document.getElementById('scaleInput').value) || 10;
+      const logoWidth = canvas.width * (scalePercent / 100);
+      const logoHeight = logoWidth * (logoImage.height / logoImage.width);
+      const x = canvas.width - logoWidth - 10;
+      const y = canvas.height - logoHeight - 10;
+      ctx.globalAlpha = 0.8;
+      ctx.drawImage(logoImage, x, y, logoWidth, logoHeight);
+      ctx.globalAlpha = 1.0;
+    }
+  }
+
+  // Поделиться в VK
+  async function shareImage() {
+    if (!mainImageLoaded) {
+      alert('Сначала загрузите изображение и создайте водяной знак.');
+      return;
+    }
+
+    const imageData = canvas.toDataURL('image/png');
+    
+    try {
+      const result = await vkBridge.send('VKWebAppShowWallPostBox', {
+        message: 'Изображение с водяным знаком',
+        attachments: imageData
+      });
+      
+      if (result.result) {
+        alert('Изображение успешно опубликовано!');
+      }
+    } catch (error) {
+      console.error('Ошибка при публикации:', error);
+      alert('Не удалось опубликовать изображение');
+    }
+  }
+
+  // Сохранить в галерею
+  async function saveToGallery() {
+    if (!mainImageLoaded) {
+      alert('Сначала загрузите изображение и создайте водяной знак.');
+      return;
+    }
+
+    const imageData = canvas.toDataURL('image/png');
+    
+    try {
+      const response = await vkBridge.send('VKWebAppDownloadFile', {
+        url: imageData,
+        filename: 'watermark_image.png'
+      });
+      
+      if (response.result) {
+        alert('Изображение сохранено в галерею!');
+      }
+    } catch (error) {
+      console.error('Ошибка сохранения:', error);
+      alert('Не удалось сохранить изображение');
+    }
+  }
+
+  // Обработчик темы VK
+  window.addEventListener('message', (event) => {
+    const theme = event.data.theme;
+    if (theme === 'dark') {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+    } else if (theme === 'light') {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    }
+  });
+</script>
+
+<div id="copyright">
+    © 2025 virby.ua@gmail.com
+</div>
+</body>
+</html>
