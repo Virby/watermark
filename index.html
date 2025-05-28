@@ -1,85 +1,174 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+<meta charset="UTF-8">
 <meta property="og:title" content="watermark deskop">
 <meta property="og:type" content="add watermark text or logo on picture">
 <meta property="og:image" content="https://virby.github.io/watermark/">
 <meta property="og:url" content="https://virby.github.io/watermark/style/leble.png">
   <title>watermark</title>
-
-  <link rel="shortcut icon" href="./style/leble.png" type="image/x-icon">
+<link rel="shortcut icon" href="./style/leble.png" type="image/x-icon">
   <link rel="stylesheet" href="./style.css">
+<style>
+    body.light-theme {
+      background-color: white;
+      color: black;
+    }
+    body.dark-theme {
+      background-color: black;
+      color: white;
+    }
+  canvas { display: block; margin-left: 10px; border: 1px solid #ccc; scrolling: yes; }
+</style>
 <script>
-    // Устанавливаем тему в зависимости от системных настроек
-    window.onload = () => {
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.body.classList.add('dark');
-      } else {
-        document.body.classList.add('light');
-      }
-    };
-<script>
-  // Эта функция переключает тему в текущем документе
   function toggleTheme() {
-    document.body.classList.toggle('light');
-    document.body.classList.toggle('dark');
-const theme = document.body.classList.contains('dark') ? 'dark' : 'light';
-    const iframe = document.getElementById('myIframe');
-    iframe.contentWindow.postMessage({ theme: theme }, '*');
+    document.body.classList.toggle('dark-theme');
+    document.body.classList.toggle('light-theme');
   }
-</script>
 
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('toggleTheme').addEventListener('click', toggleTheme);
+  });
+</script>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <script src="https://virby.github.io/watermark/index.js"></script>
 <script>
   vkBridge.send("VKWebAppInit", {});
+  window.addEventListener('message', (event) => {
+    const theme = event.data.theme;
+    if (theme === 'dark') {
+      document.body.classList.remove('light-theme');
+      document.body.classList.add('dark-theme');
+    } else if (theme === 'light') {
+      document.body.classList.remove('dark-theme');
+      document.body.classList.add('light-theme');
+    }
+  });
 </script>
 <script src="./theme.js"></script>
-<!-- Подключаем vkBridge -->
-  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-  <script>
-    // Функция для открытия внешней ссылки в браузере
-    function openExternalLink(url) {
-      vkBridge.send('VKWebAppOpenLink', { url: url });
+</head>
+<body class="light-theme">
+<H2 class="blocktitle">
+    Watermark deskop <font color="#FF0000"><b>ВНИМАНИЕ!</font></b> картинки сохраняются в формате <b>.png</b><br>
+<button id="toggleTheme">сменить тему</button>
+</h2>
+<table>
+<td width="400" style="vertical-align: top; height: 100px;" vertical-align: middle;>
+<h3>Выберите тип водяного знака:</h3>
+<label><input type="radio" name="wmType" value="text" checked> Текст</label>
+<label><input type="radio" name="wmType" value="logo"> Логотип</label>
+
+<br><br>
+<input type="file" id="mainImageInput" accept="image/*">
+<br><br>
+
+<div id="textOptions">
+  <input type="text" id="watermarkText" value="© Ваш текст" placeholder="Введите текст водяного знака">
+</div>
+
+<div id="logoOptions" style="display:none;">
+  <input type="file" id="logoInput" accept="image/*">
+  <input type="number" id="scaleInput" value="10" min="1" max="100"> Масштаб логотипа (%)
+</div>
+
+<br>
+<button onclick="previewWatermark()">Предпросмотр</button>
+<button onclick="downloadImage()">Скачать</button>
+<td>
+<canvas id="canvas"></canvas>
+</table>
+<script>
+  let mainImage = new Image();
+  let logoImage = new Image();
+  let mainImageLoaded = false;
+  let logoImageLoaded = false;
+
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  document.getElementById('mainImageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      mainImage.onload = () => {
+        mainImageLoaded = true;
+        canvas.width = mainImage.width;
+        canvas.height = mainImage.height;
+        ctx.drawImage(mainImage, 0, 0);
+      };
+      mainImage.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('logoInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      logoImage.onload = () => { logoImageLoaded = true; };
+      logoImage.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.querySelectorAll('input[name="wmType"]').forEach(el => {
+    el.addEventListener('change', () => {
+      if (el.value === 'text') {
+        document.getElementById('textOptions').style.display = '';
+        document.getElementById('logoOptions').style.display = 'none';
+      } else {
+        document.getElementById('textOptions').style.display = 'none';
+        document.getElementById('logoOptions').style.display = '';
+      }
+    });
+  });
+
+  function previewWatermark() {
+    if (!mainImageLoaded) {
+      alert('Сначала загрузите изображение.');
+      return;
     }
 
-    // Функция для загрузки локальных страниц
-    function loadLocalPage(page) {
-      document.getElementById('contentFrame').src = page;
-    }
-  </script>
-<script>
-  function openExternalLink(url) {
-    if (window.vkBridge) {
-      vkBridge.send('VKWebAppOpenLink', { url: url });
-    } else {
-      window.open(url, '_blank');
+    const wmType = document.querySelector('input[name="wmType"]:checked').value;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(mainImage, 0, 0);
+
+    if (wmType === 'text') {
+      const text = document.getElementById('watermarkText').value;
+      const fontSize = Math.floor(canvas.width / 30);
+      ctx.font = `${fontSize}px Arial`;
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(text, canvas.width - 5, canvas.height - 5);
+    } else if (wmType === 'logo') {
+      if (!logoImageLoaded) {
+        alert('Загрузите логотип.');
+        return;
+      }
+      const scalePercent = parseFloat(document.getElementById('scaleInput').value) || 10;
+      const logoWidth = canvas.width * (scalePercent / 100);
+      const logoHeight = logoWidth * (logoImage.height / logoImage.width);
+      const x = canvas.width - logoWidth - 10;
+      const y = canvas.height - logoHeight - 10;
+      ctx.globalAlpha = 0.8;
+      ctx.drawImage(logoImage, x, y, logoWidth, logoHeight);
+      ctx.globalAlpha = 1.0;
     }
   }
-</script>
-</head>
-<body>
-  <H2 class="blocktitle">
-    Watermark deskop <font color="#FF0000"><b>ВНИМАНИЕ!</font></b> картинки сохраняются в формате <b>.png</b><br>
-  <button onclick="loadLocalPage('1.html')">текст</button>
-    <button onclick="loadLocalPage('2.html')">логотип</button>
-<button onclick="toggleTheme();">Переключить тему</button>
-<br>
-  </H2><table td witdth="100%" height="90%">
-<td width="400" style="vertical-align: top; height: 100px;" vertical-align: middle;>
-    <!-- Ссылки для локальных страниц -->
 
-   
-<br>
-<td style="width: 100%; height: 100%;"> 
- <!-- iframe для локальных страниц -->
-   <iframe src="" id="contentFrame" style="width: 100%; height: 600px; border: none;"></iframe>
-</table> 
- <div id="copyright">
+  function downloadImage() {
+    const link = document.createElement('a');
+    link.download = 'image_with_watermark.png';
+    link.href = canvas.toDataURL();
+    link.click();
+  }
+</script>
+<div id="copyright">
     © 2025 virby.ua@gmail.com
 
   </div>
-
 </body>
 </html>
