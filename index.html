@@ -30,6 +30,18 @@
     document.getElementById('toggleTheme').addEventListener('click', toggleTheme);
   });
 </script>
+  <script>
+  async function openExternalPage() {
+  try {
+    await vkBridge.send("VKWebAppOpenURL", {
+      url: "https://virby.github.io/watermark/vkindex.html",
+    });
+  } catch (error) {
+    console.error("Ошибка при открытии ссылки:", error);
+    alert("Не удалось открыть страницу");
+  }
+}
+  </script>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <script src="https://virby.github.io/watermark/index.js"></script>
 <script>
@@ -50,7 +62,7 @@
 <body class="light-theme">
 <H2 class="blocktitle">
     Watermark deskop <font color="#FF0000"><b>ВНИМАНИЕ!</font></b> картинки сохраняются в формате <b>.png</b><br>
-<button id="toggleTheme">сменить тему</button>
+<button id="toggleTheme">сменить тему</button> <button onclick="openExternalPage()">Открыть другую страницу</button>
 </h2>
 <table>
 <td width="400" style="vertical-align: top; height: 100px;" vertical-align: middle;>
